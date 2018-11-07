@@ -15,15 +15,10 @@
 #
 def triangle(a, b, c)
 
-  # def triangle(a, b, c)
-  #   raise TriangleError if [a,b,c].min <= 0
-  #   x, y, z = [a,b,c].sort
-  #   raise TriangleError if x + y <= z
-  #   [:equilateral,:isosceles,:scalene].fetch([a,b,c].uniq.size - 1)
-  # end
-  
-  sides = [a, b, c]
-  
+  raise TriangleError if (a <= 0 || b <= 0 || c <= 0)
+  x, y, z = [a,b,c].sort
+  raise TriangleError if (x + y <= z)
+    
   if (a == b) && (b == c)   
     return :equilateral
   elsif (a == b) || (b == c) || (c == a) 
