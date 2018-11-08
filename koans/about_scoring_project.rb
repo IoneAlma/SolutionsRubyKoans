@@ -29,9 +29,42 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 #
 # Your goal is to write the score method.
 
-def score(dice)
-  # You need to write this method
+ def score(dice)
+  result = 0
+  counts = Hash.new(0) 
+  
+  dice.each do |diceNumKey|
+    counts[diceNumKey] += 1
+  end
+  
+  counts.each do |diceNumKey,timesFound|
+    # 1,1,1 = 1000 points
+    if diceNumKey == 1 && timesFound >= 3 then
+      result += 1000
+    timesFound -= 3
+    end
+    
+    # any number other than 1, found 3 times is that number times 
+    # 100.. so 5,5,5 = 500 points, 3,3,3 = 300 points, etc.
+    if diceNumKey != 1 && timesFound >= 3 then
+      result += diceNumKey * 100
+     timesFound -= 3
+    end
+    
+    # 1 (not part of set) = 100 points for each found
+    if diceNumKey == 1 && timesFound <= 2 then 
+      result += 100 * timesFound
+    end
+    
+    # 5 (not part of set) = 50 points for each found
+    if diceNumKey == 5 && timesFound <=2 then
+      result += 50 * timesFound
+    end
+  end
+  
+  result
 end
+
 
 class AboutScoringProject < Neo::Koan
   def test_score_of_an_empty_list_is_zero
@@ -64,11 +97,13 @@ class AboutScoringProject < Neo::Koan
     assert_equal 400, score([4,4,4])
     assert_equal 500, score([5,5,5])
     assert_equal 600, score([6,6,6])
+
   end
 
   def test_score_of_mixed_is_sum
     assert_equal 250, score([2,5,2,2,3])
     assert_equal 550, score([5,5,5,5])
+    assert_equal 100, score([3,3,2,1])
     assert_equal 1100, score([1,1,1,1])
     assert_equal 1200, score([1,1,1,1,1])
     assert_equal 1150, score([1,1,1,5,1])
